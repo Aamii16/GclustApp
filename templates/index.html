@@ -1,9 +1,12 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Clustering Analysis Platform</title>
+    <title>UTOPIA - Advanced Graph Clustering App</title>
     <style>
         * {
             margin: 0;
@@ -12,428 +15,307 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000d46 0%, #36006b 100%);
             min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
+            color: #333;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
         }
 
         .header {
             text-align: center;
             margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        .main-title {
-            font-size: 3.2em;
-            font-weight: 800;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
             margin-bottom: 10px;
-            letter-spacing: -1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .subtitle {
-            font-size: 1.2em;
-            color: #666;
-            font-weight: 400;
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
         }
 
         .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .mode-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.6));
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mode-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
-        }
-
-        .mode-card:hover::before {
-            left: 100%;
-        }
-
-        .mode-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: #667eea;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-        }
-
-        .mode-card.active {
-            border-color: #667eea;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            transform: translateY(-4px);
-        }
-
-        .mode-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .mode-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .mode-description {
-            color: #666;
-            font-size: 0.95em;
-            line-height: 1.5;
-        }
-
-        .config-panel {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .config-section {
             margin-bottom: 30px;
         }
 
-        .config-section:last-child {
-            margin-bottom: 0;
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            /* border-radius: 20px; */
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .section-title {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .algorithm-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .algorithm-option {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid #e1e5e9;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .algorithm-option:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-            transform: translateY(-2px);
-        }
-
-        .algorithm-option.selected {
-            border-color: #667eea;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.05));
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-        }
-
-        .algorithm-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .algorithm-desc {
-            font-size: 0.85em;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        .upload-section {
-            display: none;
-        }
-
-        .upload-section.active {
-            display: block;
-        }
-
-        .file-upload-area {
-            border: 3px dashed #ccc;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-upload-area:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .file-upload-area.dragover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 3em;
-            color: #ccc;
-            margin-bottom: 15px;
-            transition: color 0.3s ease;
-        }
-
-        .file-upload-area:hover .upload-icon {
+        .panel h2 {
             color: #667eea;
-        }
-
-        .upload-text {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .upload-subtext {
-            font-size: 0.9em;
-            color: #999;
-        }
-
-        .social-media-config {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
         }
 
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            margin-bottom: 20px;
         }
 
-        .form-label {
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: #333;
-            font-size: 0.95em;
+            color: #555;
         }
 
-        .form-input, .form-select {
-            padding: 12px 16px;
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
             border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 16px;
+            /* border-radius: 10px; */
+            font-size: 14px;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
+            background: white;
         }
 
-        .form-input:focus, .form-select:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #667eea;
-            background: rgba(255, 255, 255, 1);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .clustering-params {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+        .file-upload {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
         }
 
-        .param-group {
-            background: rgba(255, 255, 255, 0.6);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        .file-upload:hover {
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            transform: translateY(-2px);
         }
 
-        .param-label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 0.9em;
+        .file-upload.dragover {
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-color: #764ba2;
         }
 
-        .param-input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .file-upload-text {
             font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        .param-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .param-help {
-            font-size: 0.8em;
             color: #666;
-            margin-top: 5px;
-            line-height: 1.3;
+            margin-bottom: 10px;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .file-upload-hint {
+            font-size: 12px;
+            color: #999;
         }
 
-        .btn {
-            padding: 14px 28px;
+        .cluster-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             border: none;
-            border-radius: 12px;
+            padding: 15px 40px;
+            /* border-radius: 25px; */
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+            transition: all 0.3s ease;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .btn:hover::before {
-            left: 100%;
+        .cluster-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.6);
         }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(45deg, #f093fb, #f5576c);
-            color: white;
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(240, 147, 251, 0.6);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
+        .cluster-btn:disabled {
+            background: #ccc;
             cursor: not-allowed;
-            transform: none !important;
+            transform: none;
+            box-shadow: none;
         }
 
-        .results-section {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid rgba(255, 255, 255, 0.3);
+        .results-panel {
+            grid-column: 1 / -1;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-panel.show {
+            display: block;
         }
 
         .results-grid {
             display: grid;
+            grid-template-columns: 2fr 1fr;
             gap: 30px;
-            margin-top: 20px;
         }
 
-        .result-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .result-title {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loading-content {
+        .visualization-container {
             background: white;
-            padding: 40px;
-            border-radius: 20px;
+            /* border-radius: 15px; */
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .visualization-container img {
+            width: 100%;
+            height: auto;
+            /* border-radius: 10px; */
+        }
+
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            /* border-radius: 15px; */
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .color-swatch:hover::after {
+            content: attr(data-percentage);
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .loading {
+            display: none;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
         }
 
         .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
             width: 50px;
             height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
@@ -443,706 +325,833 @@
             100% { transform: rotate(360deg); }
         }
 
-        .feature-highlights {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .feature-item {
-            text-align: center;
+        .error {
+            background: #ff6b6b;
+            color: white;
             padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
         }
 
-        .feature-icon {
-            font-size: 2em;
-            margin-bottom: 10px;
+        .error.show {
+            display: block;
+        }
+
+        .success {
+            background: #51cf66;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        .social-mode {
+            display: none;
+        }
+
+        .social-mode.active {
+            display: block;
+        }
+
+        .image-mode {
+            display: block;
+        }
+
+        .image-mode.hidden {
+            display: none;
+        }
+
+        .advanced-params {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .advanced-params h4 {
             color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
         }
 
-        .feature-text {
-            font-size: 0.9em;
-            color: #666;
-            line-height: 1.4;
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .community-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .community-card h4 {
+            margin-bottom: 10px;
+        }
+
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .keyword-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
+            .content-wrapper {
+                grid-template-columns: 1fr;
             }
             
-            .main-title {
-                font-size: 2.2em;
+            .results-grid {
+                grid-template-columns: 1fr;
             }
             
             .mode-selector {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .algorithm-selector {
-                grid-template-columns: 1fr;
-            }
-            
-            .social-media-config {
-                grid-template-columns: 1fr;
-            }
-            
-            .clustering-params {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
                 flex-direction: column;
+                align-items: center;
             }
+            
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .param-group {
+            display: none;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .algorithm-params {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .algorithm-tag {
+            background: #6c757d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        
+        .community-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            /* border-radius: 10px; */
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .community-card:hover {
+            /* transform: translateY(-5px); */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .keyword-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .network-props {
+            background: rgba(0,0,0,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .param-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .param-section h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #667eea;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="main-title">Clustering Analysis Platform</h1>
-            <p class="subtitle">Advanced K-Means & Spectral Clustering for Images and Social Media Data</p>
+            <h1>UTOPIA</h1>
+            <p>Advanced Graph Clustering App</p>
         </div>
 
-        <div class="feature-highlights">
-            <div class="feature-item">
-                <div class="feature-icon">🎯</div>
-                <div class="feature-text">Dual clustering algorithms with optimized performance</div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">📊</div>
-                <div class="feature-text">Support for images and social media datasets</div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-text">Real-time processing with interactive results</div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">🔧</div>
-                <div class="feature-text">Customizable parameters for fine-tuned analysis</div>
-            </div>
-        </div>
-
-        <!-- Mode Selection -->
         <div class="mode-selector">
-            <div class="mode-card active" data-mode="image">
-                <span class="mode-icon">🖼️</span>
-                <h3 class="mode-title">Image Segmentation</h3>
-                <p class="mode-description">Cluster image pixels based on color similarity for advanced segmentation and visual analysis</p>
-            </div>
-            <div class="mode-card" data-mode="social">
-                <span class="mode-icon">📱</span>
-                <h3 class="mode-title">Social Media Analysis</h3>
-                <p class="mode-description">Analyze and cluster social media datasets to discover patterns and user behavior insights</p>
-            </div>
+            <button class="mode-btn active" onclick="switchMode('image')">
+                Image Clustering
+            </button>
+            <button class="mode-btn" onclick="switchMode('social')">
+                Social Media Analysis
+            </button>
         </div>
 
-        <!-- Configuration Panel -->
-        <div class="config-panel">
-            <!-- Algorithm Selection -->
-            <div class="config-section">
-                <h3 class="section-title">
-                    <span>🔬</span>
-                    Clustering Algorithm
-                </h3>
-                <div class="algorithm-selector">
-                    <div class="algorithm-option selected" data-algorithm="kmeans">
-                        <div class="algorithm-name">K-Means Clustering</div>
-                        <div class="algorithm-desc">Fast and efficient partitioning method ideal for spherical clusters</div>
-                    </div>
-                    <div class="algorithm-option" data-algorithm="spectral">
-                        <div class="algorithm-name">Spectral Clustering</div>
-                        <div class="algorithm-desc">Graph-based method excellent for complex, non-convex cluster shapes</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Image Upload Section -->
-            <div class="upload-section active" id="image-upload">
-                <div class="config-section">
-                    <h3 class="section-title">
-                        <span>📁</span>
-                        Upload Image
-                    </h3>
-                    <div class="file-upload-area" id="imageDropZone">
-                        <div class="upload-icon">🖼️</div>
-                        <div class="upload-text">Drop your image here or click to browse</div>
-                        <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
-                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Social Media Section -->
-            <div class="upload-section" id="social-upload">
-                <div class="config-section">
-                    <h3 class="section-title">
-                        <span>📊</span>
-                        Social Media Data Source
-                    </h3>
-                    <div class="social-media-config">
+        <div class="content-wrapper">
+            <!-- Configuration Panel -->
+            <div class="panel">
+                <h2>Configuration</h2>
+                <form id="clusterForm">
+                    <input type="hidden" id="mode" name="mode" value="image">
+                    
+                    <!-- Image Mode Fields -->
+                    <div id="imageFields" class="image-mode">
                         <div class="form-group">
-                            <label class="form-label">Platform</label>
-                            <select class="form-select" id="socialPlatform">
-                                <option value="twitter">Twitter/X</option>
-                                <option value="instagram">Instagram</option>
-                                <option value="facebook">Facebook</option>
-                                <option value="linkedin">LinkedIn</option>
+                            <label for="imageFile">Upload Image</label>
+                            <div class="file-upload" onclick="document.getElementById('imageFile').click()" 
+                                 id="imageUploadArea">
+                                <input type="file" id="imageFile" name="file" accept=".png,.jpg,.jpeg,.gif">
+                                <div class="file-upload-icon">📁</div>
+                                <div class="file-upload-text">Click to upload or drag & drop</div>
+                                <div class="file-upload-hint">Supports: PNG, JPG, JPEG, GIF (max 50MB)</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imageAlgorithm">Clustering Algorithm</label>
+                            <select id="imageAlgorithm" name="algorithm">
+                                <option value="kmeans">K-Means</option>
+                                <option value="spectral">Spectral Clustering</option>
+                                <option value="dbscan">DBSCAN</option> <!-- NEW -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imageClusters">Number of Clusters</label>
+                            <input type="number" id="imageClusters" name="num_clusters" min="2" max="15" value="5">
+                        </div>
+
+                        <div class="algorithm-params">
+                            <!-- K-Means Parameters -->
+                            <div id="kmeans-params" class="param-group">
+                                <div class="param-section">
+                                    <h4>K-Means Parameters</h4>
+                                    <div class="form-group">
+                                        <label for="maxIter">Max Iterations</label>
+                                        <input type="number" id="maxIter" name="max_iterations" min="10" max="1000" value="300">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Spectral Parameters -->
+                            <div id="spectral-params" class="param-group" style="display:none">
+                                <div class="param-section">
+                                    <h4>Spectral Parameters</h4>
+                                    <div class="form-group">
+                                        <label for="gamma">Gamma</label>
+                                        <input type="number" id="gamma" name="gamma" step="0.1" min="0.1" max="5" value="1.0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="neighbors">N Neighbors</label>
+                                        <input type="number" id="neighbors" name="n_neighbors" min="1" max="50" value="10">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- DBSCAN Parameters -->
+                            <div id="dbscan-params" class="param-group" style="display:none">
+                                <div class="param-section">
+                                    <h4>DBSCAN Parameters</h4>
+                                    <div class="form-group">
+                                        <label for="eps">Epsilon (ε)</label>
+                                        <input type="number" id="eps" name="eps" min="0.1" max="5" step="0.1" value="0.5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="min_samples">Minimum Samples</label>
+                                        <input type="number" id="min_samples" name="min_samples" min="1" max="50" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Common Parameters -->
+                            <div class="param-section">
+                                <h4>Parameters</h4>
+                                <div class="form-group">
+                                    <label for="randomState">Random State</label>
+                                    <input type="number" id="randomState" name="random_state" value="42">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Mode Fields -->
+                    <div id="socialFields" class="social-mode">
+                        <div class="form-group">
+                            <label for="platform">Data Source</label>
+                            <select id="platform" name="platform">
+                                <option value="twitter">Twitter Demo Data</option>
+                                <option value="facebook">Facebook Demo Data</option>
+                                <option value="instagram">Instagram Demo Data</option>
                                 <option value="upload">Upload Dataset</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Data Type</label>
-                            <select class="form-select" id="dataType">
-                                <option value="posts">Posts/Tweets</option>
-                                <option value="users">User Profiles</option>
-                                <option value="interactions">Interactions</option>
-                                <option value="hashtags">Hashtags</option>
-                            </select>
+
+                        <div id="uploadDataset" style="display:none">
+                            <div class="form-group">
+                                <label for="dataFile">Upload Dataset</label>
+                                <div class="file-upload" onclick="document.getElementById('dataFile').click()" 
+                                     id="dataUploadArea">
+                                    <input type="file" id="dataFile" name="file" accept=".csv,.json">
+                                    <div class="file-upload-icon">📊</div>
+                                    <div class="file-upload-text">Click to upload CSV or JSON</div>
+                                    <div class="file-upload-hint">Supports: CSV, JSON (max 16MB)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="demoDataFields">
+                            <div class="form-group">
+                                <label for="dataType">Data Type</label>
+                                <select id="dataType" name="data_type">
+                                    <option value="posts">Posts & Engagement</option>
+                                    <option value="users">User Profiles</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="searchQuery">Search Query/Topic</label>
+                                <input type="text" id="searchQuery" name="search_query" placeholder="e.g., machine learning, sports, technology">
+                            </div>
+                        </div>
+
+                        <div class="algorithm-params">
+                            <div class="param-section">
+                                <h4>Louvain Algorithm Parameters</h4>
+                                <div class="form-group">
+                                    <label for="threshold">Similarity Threshold</label>
+                                    <input type="number" id="threshold" name="threshold" step="0.1" min="0.1" max="1.0" value="0.7">
+                                </div>
+                                <div class="form-group">
+                                    <label for="resolution">Resolution</label>
+                                    <input type="number" id="resolution" name="resolution" step="0.1" min="0.1" max="2.0" value="1.0">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Search Query or Keywords</label>
-                        <input type="text" class="form-input" id="searchQuery" placeholder="Enter keywords, hashtags, or search terms...">
-                    </div>
 
-                    <div class="file-upload-area" id="datasetDropZone" style="margin-top: 20px;">
-                        <div class="upload-icon">📊</div>
-                        <div class="upload-text">Upload Dataset (CSV/JSON)</div>
-                        <div class="upload-subtext">Or use API to fetch live data</div>
-                        <input type="file" id="datasetInput" accept=".csv,.json" style="display: none;">
-                    </div>
-                </div>
+                    <button type="submit" class="cluster-btn" id="clusterBtn">
+                        Start Clustering
+                    </button>
+                </form>
             </div>
 
-            <!-- Clustering Parameters -->
-            <div class="config-section">
-                <h3 class="section-title">
-                    <span>⚙️</span>
-                    Clustering Parameters
-                </h3>
-                <div class="clustering-params">
-                    <div class="param-group">
-                        <div class="param-label">Number of Clusters</div>
-                        <input type="number" class="param-input" id="numClusters" value="5" min="2" max="20">
-                        <div class="param-help">Choose between 2-20 clusters based on your data complexity</div>
-                    </div>
-                    
-                    <div class="param-group" id="kmeansParams">
-                        <div class="param-label">Max Iterations</div>
-                        <input type="number" class="param-input" id="maxIterations" value="100" min="10" max="1000">
-                        <div class="param-help">Maximum iterations for convergence (K-means only)</div>
-                    </div>
-                    
-                    <div class="param-group" id="spectralParams" style="display: none;">
-                        <div class="param-label">Gamma Parameter</div>
-                        <input type="number" class="param-input" id="gamma" value="1.0" step="0.1" min="0.1" max="10.0">
-                        <div class="param-help">RBF kernel parameter for spectral clustering</div>
-                    </div>
-                    
-                    <div class="param-group">
-                        <div class="param-label">Random State</div>
-                        <input type="number" class="param-input" id="randomState" value="42" min="0" max="999">
-                        <div class="param-help">Seed for reproducible results</div>
+            <!-- Preview Panel -->
+            <div class="panel">
+                <h2>Preview & Info</h2>
+                <div id="previewContent">
+                    <div style="text-align: center; padding: 40px; color: #999;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">color</div>
+                        <p>Upload an image or configure social media analysis to see the preview here.</p>
+                        <br>
+                        <p><strong>Image Clustering:</strong> Analyzes pixel colors and textures to group similar regions.</p>
+                        <br>
+                        <p><strong>Social Media Analysis:</strong> Uses Louvain algorithm to detect communities in engagement patterns.</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="startClustering" disabled>
-                    🚀 Start Clustering
-                </button>
-                <button class="btn btn-secondary" id="resetForm">
-                    🔄 Reset Configuration
-                </button>
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Processing your data... This may take a few moments.</p>
+                </div>
+
+                <div class="error" id="errorMessage"></div>
+                <div class="success" id="successMessage"></div>
             </div>
         </div>
 
-        <!-- Results Section -->
-        <div class="results-section" id="resultsSection" style="display: none;">
-            <h3 class="section-title">
-                <span>📈</span>
-                Clustering Results
-            </h3>
-            <div class="results-grid" id="resultsGrid">
-                <!-- Results will be populated here -->
+        <!-- Results Panel -->
+        <div class="panel results-panel" id="resultsPanel">
+            <h2>📈 Clustering Results</h2>
+            
+            <div class="result-meta" id="resultMeta">
+                <!-- Will be populated with algorithm, processing time, etc. -->
             </div>
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <h3>Processing your data...</h3>
-            <p>This may take a few moments depending on the complexity</p>
+            
+            <div class="results-grid">
+                <div class="visualization-container">
+                    <img id="resultVisualization" alt="Clustering Results">
+                </div>
+                <div class="stats-container" id="statsContainer">
+                    <!-- Stats will be populated dynamically -->
+                </div>
+            </div>
+            
+            <!-- Community results section -->
+            <div id="community-results" style="display: none; margin-top: 30px;">
+                <h3>Community Analysis</h3>
+                <div class="community-list" style="margin-top: 20px;"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        class ClusteringApp {
-            constructor() {
-                this.currentMode = 'image';
-                this.currentAlgorithm = 'kmeans';
-                this.uploadedFile = null;
+        let currentMode = 'image';
+
+        // File upload handling
+        function setupFileUpload(inputId, uploadAreaId) {
+            const fileInput = document.getElementById(inputId);
+            const uploadArea = document.getElementById(uploadAreaId);
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
                 
-                this.initEventListeners();
-                this.updateUI();
-            }
-
-            initEventListeners() {
-                // Mode selection
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        this.switchMode(card.dataset.mode);
-                    });
-                });
-
-                // Algorithm selection
-                document.querySelectorAll('.algorithm-option').forEach(option => {
-                    option.addEventListener('click', (e) => {
-                        this.switchAlgorithm(option.dataset.algorithm);
-                    });
-                });
-
-                // File upload handlers
-                this.setupFileUpload('imageDropZone', 'imageInput');
-                this.setupFileUpload('datasetDropZone', 'datasetInput');
-
-                // Form controls
-                document.getElementById('startClustering').addEventListener('click', () => {
-                    this.startClustering();
-                });
-
-                document.getElementById('resetForm').addEventListener('click', () => {
-                    this.resetForm();
-                });
-
-                // Social platform change
-                document.getElementById('socialPlatform').addEventListener('change', (e) => {
-                    this.updateSocialConfig(e.target.value);
-                });
-
-                // Parameter validation
-                document.querySelectorAll('.param-input').forEach(input => {
-                    input.addEventListener('input', () => {
-                        this.validateParameters();
-                    });
-                });
-            }
-
-            switchMode(mode) {
-                this.currentMode = mode;
-                
-                // Update mode cards
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.classList.toggle('active', card.dataset.mode === mode);
-                });
-
-                // Update upload sections
-                document.querySelectorAll('.upload-section').forEach(section => {
-                    section.classList.toggle('active', section.id === `${mode}-upload`);
-                });
-
-                this.uploadedFile = null;
-                this.updateUI();
-            }
-
-            switchAlgorithm(algorithm) {
-                this.currentAlgorithm = algorithm;
-                
-                // Update algorithm options
-                document.querySelectorAll('.algorithm-option').forEach(option => {
-                    option.classList.toggle('selected', option.dataset.algorithm === algorithm);
-                });
-
-                // Show/hide algorithm-specific parameters
-                document.getElementById('kmeansParams').style.display = 
-                    algorithm === 'kmeans' ? 'block' : 'none';
-                document.getElementById('spectralParams').style.display = 
-                    algorithm === 'spectral' ? 'block' : 'none';
-
-                this.validateParameters();
-            }
-
-            setupFileUpload(dropZoneId, inputId) {
-                const dropZone = document.getElementById(dropZoneId);
-                const fileInput = document.getElementById(inputId);
-
-                dropZone.addEventListener('click', () => fileInput.click());
-
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.add('dragover');
-                });
-
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.classList.remove('dragover');
-                });
-
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('dragover');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        this.handleFileUpload(files[0], dropZoneId);
-                    }
-                });
-
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        this.handleFileUpload(e.target.files[0], dropZoneId);
-                    }
-                });
-            }
-
-            handleFileUpload(file, dropZoneId) {
-                this.uploadedFile = file;
-                const dropZone = document.getElementById(dropZoneId);
-                
-                // Update drop zone to show file info
-                dropZone.innerHTML = `
-                    <div class="upload-icon">✅</div>
-                    <div class="upload-text">File uploaded: ${file.name}</div>
-                    <div class="upload-subtext">Size: ${this.formatFileSize(file.size)}</div>
-                `;
-
-                this.validateParameters();
-            }
-
-            formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            updateSocialConfig(platform) {
-                const dataTypeSelect = document.getElementById('dataType');
-                const searchQuery = document.getElementById('searchQuery');
-                
-                if (platform === 'upload') {
-                    searchQuery.style.display = 'none';
-                    document.getElementById('datasetDropZone').style.display = 'block';
-                } else {
-                    searchQuery.style.display = 'block';
-                    document.getElementById('datasetDropZone').style.display = 'none';
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    updateFilePreview(inputId, files[0]);
                 }
+            });
 
-                this.validateParameters();
-            }
-
-            validateParameters() {
-                const startBtn = document.getElementById('startClustering');
-                let isValid = true;
-
-                // Check if file is uploaded or social data is configured
-                if (this.currentMode === 'image') {
-                    isValid = this.uploadedFile !== null;
-                } else {
-                    const platform = document.getElementById('socialPlatform').value;
-                    const query = document.getElementById('searchQuery').value.trim();
-                    isValid = (platform === 'upload' && this.uploadedFile !== null) || 
-                             (platform !== 'upload' && query.length > 0);
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    updateFilePreview(inputId, e.target.files[0]);
                 }
+            });
+        }
 
-                // Check clustering parameters
-                const numClusters = parseInt(document.getElementById('numClusters').value);
-                isValid = isValid && numClusters >= 2 && numClusters <= 20;
-
-                startBtn.disabled = !isValid;
+        function updateFilePreview(inputId, file) {
+            const previewContent = document.getElementById('previewContent');
+            const maxSize = 50 * 1024 * 1024; // 16MB
+            
+            // File size validation
+            if (file.size > maxSize) {
+                showError(`File too large (${(file.size/1024/1024).toFixed(1)}MB). Max 16MB allowed.`);
+                document.getElementById(inputId).value = '';
+                return;
             }
-
-            updateUI() {
-                this.validateParameters();
+            
+            // File type validation
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            const validDataTypes = ['text/csv', 'application/json'];
+            
+            if (inputId === 'imageFile' && !validImageTypes.includes(file.type)) {
+                showError(`Unsupported image type: ${file.type}`);
+                document.getElementById(inputId).value = '';
+                return;
             }
-
-            async startClustering() {
-                const loadingOverlay = document.getElementById('loadingOverlay');
-                loadingOverlay.style.display = 'flex';
-
-                try {
-                    // Prepare form data
-                    const formData = new FormData();
-                    formData.append('mode', this.currentMode);
-                    formData.append('algorithm', this.currentAlgorithm);
-                    formData.append('num_clusters', document.getElementById('numClusters').value);
-                    formData.append('random_state', document.getElementById('randomState').value);
-
-                    if (this.currentAlgorithm === 'kmeans') {
-                        formData.append('max_iterations', document.getElementById('maxIterations').value);
-                    } else {
-                        formData.append('gamma', document.getElementById('gamma').value);
-                    }
-
-                    if (this.currentMode === 'image') {
-                        formData.append('file', this.uploadedFile);
-                    } else {
-                        formData.append('platform', document.getElementById('socialPlatform').value);
-                        formData.append('data_type', document.getElementById('dataType').value);
-                        
-                        const platform = document.getElementById('socialPlatform').value;
-                        if (platform === 'upload') {
-                            formData.append('file', this.uploadedFile);
-                        } else {
-                            formData.append('search_query', document.getElementById('searchQuery').value);
-                        }
-                    }
-
-                    // Send request to Flask backend
-                    const response = await fetch('/cluster', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    this.displayResults(result);
-
-                } catch (error) {
-                    console.error('Clustering error:', error);
-                    this.showError('An error occurred during clustering. Please try again.');
-                } finally {
-                    loadingOverlay.style.display = 'none';
-                }
+            
+            if (inputId === 'dataFile' && !validDataTypes.includes(file.type)) {
+                showError(`Unsupported data file type: ${file.type}`);
+                document.getElementById(inputId).value = '';
+                return;
             }
-
-            displayResults(result) {
-                const resultsSection = document.getElementById('resultsSection');
-                const resultsGrid = document.getElementById('resultsGrid');
-                
-                resultsSection.style.display = 'block';
-                resultsGrid.innerHTML = '';
-
-                // Create results based on mode
-                if (this.currentMode === 'image') {
-                    this.displayImageResults(result, resultsGrid);
-                } else {
-                    this.displaySocialResults(result, resultsGrid);
-                }
-
-                // Scroll to results
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-
-            displayImageResults(result, container) {
-                // Original and segmented images
-                const imagesCard = document.createElement('div');
-                imagesCard.className = 'result-card';
-                imagesCard.innerHTML = `
-                    <h4 class="result-title">🖼️ Image Segmentation Results</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <h5 style="margin-bottom: 10px; color: #666;">Original Image</h5>
-                            <img src="data:image/png;base64,${result.original_image}" 
-                                 style="width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                        </div>
-                        <div>
-                            <h5 style="margin-bottom: 10px; color: #666;">Segmented Image</h5>
-                            <img src="data:image/png;base64,${result.segmented_image}" 
-                                 style="width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                        </div>
-                    </div>
-                `;
-
-                // Clustering statistics
-                const statsCard = document.createElement('div');
-                statsCard.className = 'result-card';
-                statsCard.innerHTML = `
-                    <h4 class="result-title">📊 Clustering Statistics</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <div style="text-align: center; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #667eea;">${result.num_clusters}</div>
-                            <div style="color: #666;">Clusters</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: rgba(118, 75, 162, 0.1); border-radius: 10px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #764ba2;">${result.processing_time}s</div>
-                            <div style="color: #666;">Processing Time</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: rgba(240, 147, 251, 0.1); border-radius: 10px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #f093fb;">${result.pixels_processed}</div>
-                            <div style="color: #666;">Pixels Processed</div>
-                        </div>
-                    </div>
-                `;
-
-                // Color palette
-                if (result.color_palette) {
-                    const paletteCard = document.createElement('div');
-                    paletteCard.className = 'result-card';
-                    paletteCard.innerHTML = `
-                        <h4 class="result-title">🎨 Extracted Color Palette</h4>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                            ${result.color_palette.map(color => `
-                                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                                    <div style="width: 60px; height: 60px; background-color: rgb(${color.join(',')}); 
-                                                border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
-                                    <div style="font-size: 0.8em; color: #666;">RGB(${color.join(',')})</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    container.appendChild(paletteCard);
-                }
-
-                container.appendChild(imagesCard);
-                container.appendChild(statsCard);
-            }
-
-            displaySocialResults(result, container) {
-                // Cluster overview
-                const overviewCard = document.createElement('div');
-                overviewCard.className = 'result-card';
-                overviewCard.innerHTML = `
-                    <h4 class="result-title">📱 Social Media Clustering Results</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                        <div style="text-align: center; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #667eea;">${result.total_data_points}</div>
-                            <div style="color: #666;">Data Points</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: rgba(118, 75, 162, 0.1); border-radius: 10px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #764ba2;">${result.num_clusters}</div>
-                            <div style="color: #666;">Clusters</div>
-                        </div>
-                        <div style="text-align: center; padding: 15px; background: rgba(240, 147, 251, 0.1); border-radius: 10px;">
-                            <div style="font-size: 2em; font-weight: bold; color: #f093fb;">${result.processing_time}s</div>
-                            <div style="color: #666;">Processing Time</div>
-                        </div>
-                    </div>
-                `;
-
-                // Cluster details
-                if (result.clusters) {
-                    const clustersCard = document.createElement('div');
-                    clustersCard.className = 'result-card';
-                    let clustersHTML = `
-                        <h4 class="result-title">🔍 Cluster Analysis</h4>
-                        <div style="display: grid; gap: 20px;">
-                    `;
-
-                    result.clusters.forEach((cluster, index) => {
-                        clustersHTML += `
-                            <div style="border: 2px solid #e1e5e9; border-radius: 12px; padding: 20px;">
-                                <h5 style="color: #333; margin-bottom: 15px;">
-                                    Cluster ${index + 1} (${cluster.size} items)
-                                </h5>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                    <div>
-                                        <strong>Top Keywords:</strong>
-                                        <div style="margin-top: 5px;">
-                                            ${cluster.keywords.map(kw => 
-                                                `<span style="background: rgba(102, 126, 234, 0.1); 
-                                                         padding: 4px 8px; border-radius: 6px; 
-                                                         font-size: 0.85em; margin-right: 5px;">${kw}</span>`
-                                            ).join('')}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <strong>Characteristics:</strong>
-                                        <ul style="margin-top: 5px; padding-left: 20px; font-size: 0.9em; color: #666;">
-                                            ${cluster.characteristics.map(char => `<li>${char}</li>`).join('')}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    clustersHTML += '</div>';
-                    clustersCard.innerHTML = clustersHTML;
-                    container.appendChild(clustersCard);
-                }
-
-                // Visualization
-                if (result.visualization) {
-                    const vizCard = document.createElement('div');
-                    vizCard.className = 'result-card';
-                    vizCard.innerHTML = `
-                        <h4 class="result-title">📈 Cluster Visualization</h4>
+            
+            if (inputId === 'imageFile' && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewContent.innerHTML = `
                         <div style="text-align: center;">
-                            <img src="data:image/png;base64,${result.visualization}" 
-                                 style="max-width: 100%; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <h3>Image Preview</h3>
+                            <img src="${e.target.result}" style="max-width: 100%; max-height: 300px; border-radius: 10px; margin: 10px 0;">
+                            <p><strong>File:</strong> ${file.name}</p>
+                            <p><strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
                         </div>
                     `;
-                    container.appendChild(vizCard);
-                }
-
-                container.appendChild(overviewCard);
-            }
-
-            showError(message) {
-                const errorCard = document.createElement('div');
-                errorCard.className = 'result-card';
-                errorCard.style.borderLeft = '4px solid #ff6b6b';
-                errorCard.innerHTML = `
-                    <h4 class="result-title" style="color: #ff6b6b;">❌ Error</h4>
-                    <p style="color: #666; margin-top: 10px;">${message}</p>
+                };
+                reader.readAsDataURL(file);
+            } else if (inputId === 'dataFile') {
+                previewContent.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">📊</div>
+                        <h3>Dataset Ready</h3>
+                        <p><strong>File:</strong> ${file.name}</p>
+                        <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                        <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
+                    </div>
                 `;
-
-                const resultsSection = document.getElementById('resultsSection');
-                const resultsGrid = document.getElementById('resultsGrid');
-                
-                resultsSection.style.display = 'block';
-                resultsGrid.innerHTML = '';
-                resultsGrid.appendChild(errorCard);
-                
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-
-            resetForm() {
-                // Reset all form fields
-                document.getElementById('numClusters').value = '5';
-                document.getElementById('maxIterations').value = '100';
-                document.getElementById('gamma').value = '1.0';
-                document.getElementById('randomState').value = '42';
-                document.getElementById('searchQuery').value = '';
-                
-                // Reset file uploads
-                this.uploadedFile = null;
-                document.getElementById('imageInput').value = '';
-                document.getElementById('datasetInput').value = '';
-                
-                // Reset drop zones
-                document.getElementById('imageDropZone').innerHTML = `
-                    <div class="upload-icon">🖼️</div>
-                    <div class="upload-text">Drop your image here or click to browse</div>
-                    <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
-                `;
-                
-                document.getElementById('datasetDropZone').innerHTML = `
-                    <div class="upload-icon">📊</div>
-                    <div class="upload-text">Upload Dataset (CSV/JSON)</div>
-                    <div class="upload-subtext">Or use API to fetch live data</div>
-                `;
-
-                // Hide results
-                document.getElementById('resultsSection').style.display = 'none';
-                
-                // Reset to defaults
-                this.switchMode('image');
-                this.switchAlgorithm('kmeans');
-                
-                this.validateParameters();
             }
         }
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => {
-            new ClusteringApp();
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode').value = mode;
+            
+            // Update mode buttons
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('selected-mode');
+            });
+            event.target.classList.add('active', 'selected-mode');
+            
+            // Show/hide appropriate fields
+            const imageFields = document.getElementById('imageFields');
+            const socialFields = document.getElementById('socialFields');
+            
+            if (mode === 'image') {
+                imageFields.style.display = 'block';
+                socialFields.style.display = 'none';
+            } else {
+                imageFields.style.display = 'none';
+                socialFields.style.display = 'block';
+            }
+            
+            // Reset preview
+            resetPreview();
+        }
+
+        function resetPreview() {
+            const previewContent = document.getElementById('previewContent');
+            if (currentMode === 'image') {
+                previewContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #999;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">🖼️</div>
+                        <p>Upload an image to see clustering preview.</p>
+                        <br>
+                        <p>The algorithm will analyze pixel colors and group similar regions together.</p>
+                    </div>
+                `;
+            } else {
+                previewContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #999;">
+                        <div style="font-size: 3em; margin-bottom: 20px;">📱</div>
+                        <p>Configure social media analysis settings.</p>
+                        <br>
+                        <p>The Louvain algorithm will detect communities in your data.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Toggle algorithm parameters based on selection
+        function toggleAlgorithmParams(algorithm) {
+            // Hide all parameter groups
+            document.querySelectorAll('.param-group').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show selected algorithm's parameters
+            if (algorithm === 'kmeans') {
+                document.getElementById('kmeans-params').style.display = 'block';
+            } else if (algorithm === 'spectral') {
+                document.getElementById('spectral-params').style.display = 'block';
+            } else if (algorithm === 'dbscan') {
+                document.getElementById('dbscan-params').style.display = 'block';
+                
+                // For DBSCAN, hide the cluster count input
+                document.getElementById('imageClusters').closest('.form-group').style.display = 'none';
+            } else {
+                document.getElementById('imageClusters').closest('.form-group').style.display = 'block';
+            }
+        }
+
+        // Platform change handling
+        function toggleDataSource(platform) {
+            const uploadDataset = document.getElementById('uploadDataset');
+            const demoDataFields = document.getElementById('demoDataFields');
+            
+            if (platform === 'upload') {
+                uploadDataset.style.display = 'block';
+                demoDataFields.style.display = 'none';
+            } else {
+                uploadDataset.style.display = 'none';
+                demoDataFields.style.display = 'block';
+            }
+        }
+
+        // Form submission
+        document.getElementById('clusterForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const clusterBtn = document.getElementById('clusterBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const resultsPanel = document.getElementById('resultsPanel');
+            
+            // Reset messages and results
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            resultsPanel.classList.remove('show');
+            document.getElementById('community-results').style.display = 'none';
+            
+            // Validate form
+            if (currentMode === 'image' && !document.getElementById('imageFile').files.length) {
+                showError('Please upload an image first');
+                return;
+            }
+            
+            if (currentMode === 'social') {
+                const platform = document.getElementById('platform').value;
+                if (platform === 'upload' && !document.getElementById('dataFile').files.length) {
+                    showError('Please upload a dataset first');
+                    return;
+                }
+                
+                if (platform !== 'upload' && !document.getElementById('searchQuery').value.trim()) {
+                    showError('Please enter a search query for demo data');
+                    return;
+                }
+            }
+            
+            // Show loading
+            clusterBtn.disabled = true;
+            clusterBtn.textContent = '⏳ Processing...';
+            loadingIndicator.classList.add('show');
+            
+            try {
+                const response = await fetch('/cluster', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResults(result);
+                    successMessage.textContent = `Clustering completed successfully in ${result.processing_time}s`;
+                    successMessage.classList.add('show');
+                } else {
+                    throw new Error(result.error || 'Unknown error occurred');
+                }
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                clusterBtn.disabled = false;
+                clusterBtn.textContent = 'Clusterize';
+                loadingIndicator.classList.remove('show');
+            }
         });
+
+        function displayResults(result) {
+            const resultsPanel = document.getElementById('resultsPanel');
+            const resultVisualization = document.getElementById('resultVisualization');
+            const statsContainer = document.getElementById('statsContainer');
+            const resultMeta = document.getElementById('resultMeta');
+            const communityResults = document.getElementById('community-results');
+            
+            // Show visualization
+            resultVisualization.src = `data:image/png;base64,${result.visualization}`;
+            
+            // Update result metadata
+            resultMeta.innerHTML = `
+                <div class="algorithm-tag">${result.algorithm_used}</div>
+                <span>Processed ${result.pixels_processed || result.points_processed} points in ${result.processing_time}s</span>
+                ${result.quality_score ? `<span>Quality score: ${result.quality_score}</span>` : ''}
+                ${result.modularity_score ? `<span>Modularity: ${result.modularity_score}</span>` : ''}
+            `;
+            
+            // Generate stats
+            let statsHTML = '';
+            
+            // General stats
+            statsHTML += `
+                <div class="stat-card">
+                    <h3>Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span>Algorithm</span>
+                            <span><strong>${result.algorithm_used}</strong></span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Processing Time</span>
+                            <span><strong>${result.processing_time}s</strong></span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Data Points</span>
+                            <span><strong>${result.pixels_processed || result.points_processed}</strong></span>
+                        </div>
+                        ${result.quality_score ? `
+                        <div class="stat-item">
+                            <span>Quality Score</span>
+                            <span><strong>${result.quality_score}</strong></span>
+                        </div>` : ''}
+                        ${result.modularity_score ? `
+                        <div class="stat-item">
+                            <span>Modularity</span>
+                            <span><strong>${result.modularity_score}</strong></span>
+                        </div>` : ''}
+                        ${result.num_communities ? `
+                        <div class="stat-item">
+                            <span>Communities</span>
+                            <span><strong>${result.num_communities}</strong></span>
+                        </div>` : ''}
+                        ${result.num_clusters ? `
+                        <div class="stat-item">
+                            <span>Clusters</span>
+                            <span><strong>${result.num_clusters}</strong></span>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Cluster stats
+            if (result.cluster_stats) {
+                statsHTML += `
+                    <div class="stat-card">
+                        <h3>${result.mode === 'social' ? 'Community Sizes' : 'Cluster Distribution'}</h3>
+                        <div class="stats-grid">
+                `;
+                
+                Object.entries(result.cluster_stats).forEach(([cluster, count]) => {
+                    statsHTML += `
+                        <div class="stat-item">
+                            <span>${cluster}</span>
+                            <span><strong>${count}</strong></span>
+                        </div>
+                    `;
+                });
+                
+                statsHTML += '</div></div>';
+            }
+            
+            // Color palette for images
+            if (result.mode === 'image' && result.color_palette) {
+                statsHTML += `
+                    <div class="stat-card">
+                        <h3>Color Palette</h3>
+                        <div class="color-palette">
+                `;
+                
+                result.color_palette.forEach((color, index) => {
+                    const percentage = result.color_percentages[index];
+                    statsHTML += `
+                        <div class="color-swatch" 
+                             style="background-color: rgb(${color[0]}, ${color[1]}, ${color[2]})"
+                             data-percentage="${percentage}%"
+                             title="RGB(${color[0]}, ${color[1]}, ${color[2]}) - ${percentage}%">
+                        </div>
+                    `;
+                });
+
+                statsHTML += `</div></div>`;
+            }
+
+            statsContainer.innerHTML = statsHTML;
+            resultsPanel.classList.add('show');
+            
+            // Communities for social mode
+            if (result.mode === 'social' && result.communities) {
+                displayCommunities(result.communities);
+                communityResults.style.display = 'block';
+            }
+        }
+        
+        function displayCommunities(communities) {
+            const container = document.querySelector('.community-list');
+            container.innerHTML = '';
+            
+            communities.forEach(community => {
+                const card = `
+                    <div class="community-card">
+                        <h4>Community #${community.id} <span style="font-size:0.8em; opacity:0.8;">(${community.size} members)</span></h4>
+                        
+                        <div class="keywords">
+                            ${community.keywords.map(kw => `<span class="keyword-tag">${kw}</span>`).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 10px;">
+                            <strong>Characteristics:</strong>
+                            <ul style="padding-left: 20px; margin-top: 5px;">
+                                ${community.characteristics.map(ch => `<li>${ch}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        ${community.network_properties && Object.keys(community.network_properties).length > 0 ? `
+                            <div class="network-props">
+                                <strong>Network Properties:</strong>
+                                <ul style="padding-left: 20px; margin-top: 5px;">
+                                    ${Object.entries(community.network_properties).map(([key, value]) => 
+                                        `<li>${key.replace(/_/g, ' ')}: ${typeof value === 'number' ? value.toFixed(3) : value}</li>`
+                                    ).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = `❌ Error: ${message}`;
+            errorMessage.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        // Initialize the application
+        function initApp() {
+            // Setup file uploads
+            setupFileUpload('imageFile', 'imageUploadArea');
+            setupFileUpload('dataFile', 'dataUploadArea');
+            
+            // Set event listeners
+            document.getElementById('imageAlgorithm').addEventListener('change', function() {
+                toggleAlgorithmParams(this.value);
+            });
+            
+            document.getElementById('platform').addEventListener('change', function() {
+                toggleDataSource(this.value);
+            });
+            
+            // Initialize algorithm parameters
+            toggleAlgorithmParams(document.getElementById('imageAlgorithm').value);
+            toggleDataSource(document.getElementById('platform').value);
+            
+            // Reset preview
+            resetPreview();
+        }
+
+        // Run initialization when page loads
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
