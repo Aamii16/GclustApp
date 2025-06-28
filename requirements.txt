@@ -4,7 +4,11 @@ numpy
 pandas
 Pillow
 opencv-python
-scikit-learn
 matplotlib
 seaborn
 werkzeug
+scikit-learn
+networkx
+python-louvain
+scipy
+requests
