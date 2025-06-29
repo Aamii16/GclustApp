@@ -7,6 +7,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score, silhouette_samples
 from sklearn.neighbors import kneighbors_graph, BallTree
+from sklearn.metrics import pairwise_distances  # Add this import
+from sklearn.neighbors import kneighbors_graph
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
@@ -37,6 +39,7 @@ app.config['DEBUG'] = False  # Disable in production
 
 # Create upload directory if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'csv', 'json'}
@@ -156,46 +159,32 @@ def improved_kmeans_clustering(data, n_clusters, random_state=42, **kwargs):
         raise Exception(f"Error in improved K-means clustering: {str(e)}")
 
 def improved_spectral_clustering(data, n_clusters, random_state=42, **kwargs):
-    """Optimized Spectral clustering with BallTree"""
+    """Optimized Spectral clustering for images"""
     try:
         scaler = StandardScaler()
         data_scaled = scaler.fit_transform(data)
         
         gamma = kwargs.get('gamma', 1.0)
-        n_neighbors = min(kwargs.get('n_neighbors', 10), len(data_scaled) - 1)
         
-        # Use BallTree for efficient distance calculation
-        tree = BallTree(data_scaled)
-        dist, _ = tree.query(data_scaled, k=n_neighbors+1)  # Include self
-        
-        # Calculate adaptive sigma
-        sigma = np.median(dist[:, 1:]) / gamma  # Exclude self-distance
-        
-        # Sparse affinity matrix
-        affinity_matrix = np.exp(-dist**2 / (2 * sigma**2))
-        affinity_matrix = affinity_matrix[:, 1:]  # Remove self
-        
+        # Use built-in nearest neighbors mode
         clusterer = SpectralClustering(
             n_clusters=n_clusters,
+            affinity='nearest_neighbors',
+            n_neighbors=min(15, len(data_scaled)-1),
+            gamma=gamma,
             random_state=random_state,
-            affinity='precomputedNearestNeighbors',
-            n_neighbors=n_neighbors,
-            assign_labels='discretize',
-            n_init=10
+            assign_labels='kmeans',
+            n_init=5
         )
         
-        labels = clusterer.fit_predict(affinity_matrix)
-        
-        # Calculate clustering quality
-        score = 0
-        if len(set(labels)) > 1:
-            score = silhouette_score(data_scaled, labels)
+        labels = clusterer.fit_predict(data_scaled)
+        score = silhouette_score(data_scaled, labels) if len(set(labels)) > 1 else 0
         
         return labels, data_scaled, score
         
     except Exception as e:
-        raise Exception(f"Error in optimized Spectral clustering: {str(e)}")
-
+        raise Exception(f"Efficient spectral clustering error: {str(e)}")
+    
 def dbscan_clustering(data, **kwargs):
     """DBSCAN for density-based clustering"""
     try:
